@@ -1,28 +1,19 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
     <textarea :id="tinymceId" class="tinymce-textarea" />
-    <div class="editor-custom-btn-container">
-      <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK" />
-    </div>
   </div>
 </template>
 
 <script>
-/**
- * docs:
- * https://panjiachen.github.io/vue-element-admin-site/feature/component/rich-editor.html#tinymce
- */
-import editorImage from './components/EditorImage'
-import plugins from './plugins'
-import toolbar from './toolbar'
 import load from './dynamicLoadScript'
+import axios from 'axios'
+import { url_upload_img } from '@/api'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
 
 export default {
   name: 'Tinymce',
-  components: { editorImage },
   props: {
     id: {
       type: String,
@@ -34,27 +25,10 @@ export default {
       type: String,
       default: ''
     },
-    toolbar: {
-      type: Array,
-      required: false,
-      default() {
-        return []
-      }
-    },
-    menubar: {
+    module: {
       type: String,
-      default: 'file edit insert view format table'
+      default: 'html',
     },
-    height: {
-      type: [Number, String],
-      required: false,
-      default: 360
-    },
-    width: {
-      type: [Number, String],
-      required: false,
-      default: 'auto'
-    }
   },
   data() {
     return {
@@ -116,31 +90,23 @@ export default {
       const _this = this
       window.tinymce.init({
         selector: `#${this.tinymceId}`,
-        language: this.languageTypeList['en'],
-        height: this.height,
-        body_class: 'panel-body ',
-        object_resizing: false,
-        toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
-        menubar: this.menubar,
-        plugins: plugins,
-        end_container_on_empty_block: true,
-        powerpaste_word_import: 'clean',
-        code_dialog_height: 450,
-        code_dialog_width: 1000,
-        advlist_bullet_styles: 'square',
-        advlist_number_styles: 'default',
-        imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
-        default_link_target: '_blank',
-        link_title: false,
-        nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
-        init_instance_callback: editor => {
+        language: 'zh_CN',
+        height: 600,
+        convert_urls: false,
+        menubar: 'file edit view insert format table help',
+        toolbar: [
+          'undo redo | searchreplace bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | fullscreen preview print code',
+          'formatselect fontsizeselect forecolor backcolor | blockquote subscript superscript removeformat | ltr rtl hr pagebreak | image',
+        ],
+        plugins: 'print preview paste searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image table hr pagebreak nonbreaking insertdatetime advlist lists wordcount imagetools textpattern noneditable help colorpicker contextmenu textcolor',
+        init_instance_callback(editor) {
           if (_this.value) {
             editor.setContent(_this.value)
           }
           _this.hasInit = true
           editor.on('NodeChange Change KeyUp SetContent', () => {
-            this.hasChange = true
-            this.$emit('input', editor.getContent())
+            _this.hasChange = true
+            _this.$emit('input', editor.getContent())
           })
         },
         setup(editor) {
@@ -148,43 +114,18 @@ export default {
             _this.fullscreen = e.state
           })
         },
-        // it will try to keep these URLs intact
-        // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
-        // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
-        convert_urls: false
-        // 整合七牛上传
-        // images_dataimg_filter(img) {
-        //   setTimeout(() => {
-        //     const $image = $(img);
-        //     $image.removeAttr('width');
-        //     $image.removeAttr('height');
-        //     if ($image[0].height && $image[0].width) {
-        //       $image.attr('data-wscntype', 'image');
-        //       $image.attr('data-wscnh', $image[0].height);
-        //       $image.attr('data-wscnw', $image[0].width);
-        //       $image.addClass('wscnph');
-        //     }
-        //   }, 0);
-        //   return img
-        // },
-        // images_upload_handler(blobInfo, success, failure, progress) {
-        //   progress(0);
-        //   const token = _this.$store.getters.token;
-        //   getToken(token).then(response => {
-        //     const url = response.data.qiniu_url;
-        //     const formData = new FormData();
-        //     formData.append('token', response.data.qiniu_token);
-        //     formData.append('key', response.data.qiniu_key);
-        //     formData.append('file', blobInfo.blob(), url);
-        //     upload(formData).then(() => {
-        //       success(url);
-        //       progress(100);
-        //     })
-        //   }).catch(err => {
-        //     failure('出现未知问题，刷新页面，或者联系程序员')
-        //     console.log(err);
-        //   });
-        // },
+        images_upload_handler(blobInfo, success, failure, progress) {
+          progress(0)
+          const data = new FormData()
+          data.append('file', blobInfo.blob())
+          data.append('module', _this.module)
+
+          axios.post(url_upload_img, data)
+            .then(res => {
+              success(res.data.data.url)
+              progress(100)
+            })
+        },
       })
     },
     destroyTinymce() {

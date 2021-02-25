@@ -32,22 +32,28 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
-      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
+      const matched = [...this.$route.matched]
+      const last = matched[matched.length - 1]
+      const routes = this.$store.state.permission.original_routes
 
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+      if (last.meta.activeMenu) {
+        for (const i of routes) {
+          if (i.children) {
+            for (const j of i.children) {
+              if (j.path === last.meta.activeMenu) {
+                matched.splice(1, 0, {
+                  name: j.name,
+                  path: j.path,
+                  meta: { title: j.meta.title },
+                })
+                break
+              }
+            }
+          }
+        }
       }
 
-      this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-    },
-    isDashboard(route) {
-      const name = route && route.name
-      if (!name) {
-        return false
-      }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+      this.levelList = matched.filter(item => item.meta && item.meta.title)
     },
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561

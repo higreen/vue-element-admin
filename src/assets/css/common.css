@@ -1,0 +1,81 @@
+/* 文字
+---------------------------------------------- */
+.font-bold {font-weight: bold;}
+
+/* 颜色
+---------------------------------------------- */
+.color-primary {color: #409eff!important;}
+.color-success {color: #67c23a!important;}
+.color-warning {color: #e6a23c!important;}
+.color-danger {color: #f56c6c!important;}
+
+/* 位置
+---------------------------------------------- */
+.float-r {float: right;}
+.text-r {text-align: right;}
+
+/* 其它
+---------------------------------------------- */
+.cursor-pointer {cursor: pointer;}
+
+/* UI重置
+---------------------------------------------- */
+main {
+  margin: 20px;
+  padding: 20px;
+  background: white;
+}
+span.el-avatar {background: unset;}
+
+/* 第三方组件
+---------------------------------------------- */
+.tinymce-container {margin-right: 2px;margin-bottom: 22px;}
+.swal2-container {z-index: 10000!important;}
+
+/* 表单
+---------------------------------------------- */
+.input-medium > input {width: 250px;}
+
+/* 表格
+---------------------------------------------- */
+.table-header {
+  margin-bottom: 20px;
+}
+.table-header::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+.table-header > .el-input,
+.table-header > .el-select,
+.table-header > .el-date-editor {
+  margin-right: 5px;
+}
+.table-header > .el-input,
+.table-header > .el-select {
+  width: 200px;
+}
+.table-header > .el-button-group {
+  float: right;
+}
+.el-table thead th {
+  background-color: #f1f1f1;
+}
+.el-table .el-avatar {
+  margin-right: .5em;
+  vertical-align: middle;
+}
+.table-filter {
+  margin-bottom: 20px;
+}
+.table-footer {
+  float: left;
+  margin-top: 40px;
+}
+.table-column-action > .cell {
+  display: flex;
+  justify-content: space-evenly;
+}
+.table-column-action .el-button {
+  width: 60px;
+}
