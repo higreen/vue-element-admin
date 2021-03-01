@@ -5,7 +5,7 @@
       <el-input v-model="list_query.keyword" placeholder="关键词" @keyup.enter.native="search" />
       <el-select
         v-model="list_query.user_id"
-        placeholder="用户"
+        placeholder="筛选用户"
         filterable
         remote
         clearable
@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column label="IP" prop="ip" width="150" />
       <el-table-column label="代理" prop="agent" />
-      <el-table-column label="登录时间" prop="created_at" width="180" />
+      <el-table-column label="登录时间" prop="created_at" width="200" />
     </el-table>
     <!-- 表格-底部 -->
     <pagination v-show="total>0" :total="total" :page.sync="list_query.page" :limit.sync="list_query.size" @pagination="getList" />

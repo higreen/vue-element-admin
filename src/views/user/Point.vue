@@ -28,12 +28,13 @@
           <el-avatar :src="row.user.avatar" />{{ row.user.nickname }}
         </template>
       </el-table-column>
-      <el-table-column label="金额" width="200">
+      <el-table-column label="数量" width="200">
         <template slot-scope="{row}">
-          <span v-if="row.amount>0" class="color-success font-bold">+{{ row.amount }}</span>
-          <span v-else class="color-danger font-bold">{{ row.amount }}</span>
+          <span v-if="row.point>0" class="color-success font-bold">+{{ row.point }}</span>
+          <span v-else class="color-danger font-bold">{{ row.point }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="结余" prop="balance" />
       <el-table-column label="备注" prop="remark" />
       <el-table-column label="创建时间" prop="created_at" width="180" />
     </el-table>

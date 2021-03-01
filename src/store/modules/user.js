@@ -4,15 +4,15 @@ import { resetRouter } from '@/router'
 
 const state = {
   avatar: '',
-  permissions: '',
+  privileges: '',
 }
 
 const mutations = {
-  SET_AVATAR: (state, avatar) => {
+  setAvatar: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_PERMISSIONS: (state, permissions) => {
-    state.permissions = permissions
+  setPrivilege: (state, privileges) => {
+    state.privileges = privileges
   },
 }
 
@@ -22,13 +22,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       ajax.get('/admin/user')
         .then(res => {
-          commit('SET_AVATAR', res.avatar)
-          commit('SET_PERMISSIONS', res.permissions)
-          if (res.is_default_password) {
-            commit('promptChangePassword')
-          }
+          commit('setAvatar', res.avatar)
+          commit('setPrivilege', res.privileges)
 
-          resolve(res)
+          resolve(res.privileges)
         }).catch(error => {
           removeAuth()
           reject(error)
@@ -36,14 +33,14 @@ const actions = {
     })
   },
   setAvatar({ commit }, avatar) {
-    commit('SET_AVATAR', avatar)
+    commit('setAvatar', avatar)
   },
   // 退出登录
   signOut({ commit, dispatch }) {
-    commit('SET_AVATAR', '')
-    commit('SET_PERMISSIONS', '')
+    commit('setAvatar', '')
+    commit('setPrivilege', '')
     dispatch('tagsView/delAllViews', null, { root: true })
-    dispatch('permission/clear', null, { root: true })
+    dispatch('privilege/clear', null, { root: true })
     removeAuth()
     resetRouter()
   },

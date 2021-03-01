@@ -19,9 +19,9 @@
         </template>
       </el-table-column>
       <el-table-column label="内容" prop="content" />
-      <el-table-column label="提交时间" prop="created_at" width="180" />
-      <el-table-column label="处理时间" prop="updated_at" width="180" />
-      <el-table-column label="操作" align="center" width="180" class-name="table-column-action">
+      <el-table-column label="提交时间" prop="created_at" width="160" />
+      <el-table-column label="处理时间" prop="updated_at" width="160" />
+      <el-table-column label="操作" align="center" width="160" class-name="table-column-action">
         <template slot-scope="{row}">
           <el-button v-if="!row.state" plain type="info" size="mini" icon="el-icon-check" @click="edit(row.id)" />
         </template>

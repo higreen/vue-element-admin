@@ -14,15 +14,14 @@
     >
       <el-table-column label="ID" prop="id" width="50" />
       <el-table-column label="名称" prop="name" />
-      <el-table-column label="路由" prop="route" />
-      <el-table-column label="查询" prop="query" />
-      <el-table-column label="内容" prop="content">
+      <el-table-column label="查询字符串" prop="query" />
+      <el-table-column label="请求内容" prop="body">
         <template slot-scope="{$index}">
           <button class="el-button el-button--success is-plain el-button--mini" @click="showContent($index)">查看</button>
         </template>
       </el-table-column>
       <el-table-column label="IP" prop="ip" width="150" />
-      <el-table-column label="创建时间" prop="created_at" width="180" />
+      <el-table-column label="创建时间" prop="created_at" width="200" />
     </el-table>
     <!-- 表格-底部 -->
     <pagination v-show="total>0" :total="total" :page.sync="list_query.page" :limit.sync="list_query.size" @pagination="getList" />
@@ -85,7 +84,7 @@ export default {
     // 显示内容
     showContent(index) {
       const item = this.list[index]
-      this.dialog_content = item.content
+      this.dialog_content = item.body
       this.show_dialog = true
     },
   },

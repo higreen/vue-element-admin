@@ -100,10 +100,7 @@ export default {
     },
     // 查询列表
     getList() {
-      ajax.get('/admin/slides')
-        .then((res) => {
-          this.list = res
-        })
+      //
     },
     /* getMessage() {
       const user = this.list_user[this.list_user_index]

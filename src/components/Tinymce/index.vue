@@ -36,12 +36,6 @@ export default {
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
-      languageTypeList: {
-        'en': 'en',
-        'zh': 'zh_CN',
-        'es': 'es_MX',
-        'ja': 'ja'
-      }
     }
   },
   computed: {
@@ -91,7 +85,7 @@ export default {
       window.tinymce.init({
         selector: `#${this.tinymceId}`,
         language: 'zh_CN',
-        height: 600,
+        height: 500,
         convert_urls: false,
         menubar: 'file edit view insert format table help',
         toolbar: [

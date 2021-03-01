@@ -24,10 +24,11 @@
           <el-switch v-model="row.is_forbidden" active-color="#ff4949" @change="editForbidden(row.id)" />
         </template>
       </el-table-column>
-      <el-table-column label="注册时间" prop="created_at" width="180" />
-      <el-table-column label="操作" align="center" width="180" class-name="table-column-action">
+      <el-table-column label="创建时间" prop="created_at" width="160" />
+      <el-table-column label="更新时间" prop="updated_at" width="160" />
+      <el-table-column label="操作" align="center" width="160" class-name="table-column-action">
         <template slot-scope="{row}">
-          <el-button plain type="info" size="mini" icon="el-icon-view" @click="view(row.id)" />
+          <el-button plain type="info" size="mini" icon="el-icon-view" title="查看" @click="view(row.id)" />
         </template>
       </el-table-column>
     </el-table>

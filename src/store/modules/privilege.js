@@ -2,7 +2,7 @@ import public_routes from '@/router/public'
 import private_routes from '@/router/private'
 
 // 权限名称集合
-let permission_names = []
+let privilege_names = []
 
 // 过滤路由
 function filterRoutes(routes) {
@@ -10,7 +10,7 @@ function filterRoutes(routes) {
 
   routes.forEach((item) => {
     const route = { ...item }
-    if (hasPermission(route.name)) {
+    if (hasPrivilege(route.name)) {
       if (route.children) {
         route.children = filterRoutes(route.children)
       }
@@ -23,8 +23,8 @@ function filterRoutes(routes) {
 }
 
 // 检查权限
-function hasPermission(route_name) {
-  return route_name ? permission_names.includes(route_name) : true
+function hasPrivilege(route_name) {
+  return route_name ? privilege_names.includes(route_name) : true
 }
 
 export default {
@@ -43,7 +43,7 @@ export default {
   },
   actions: {
     // 生成路由
-    generateRoutes({ commit }, permissions) {
+    generateRoutes({ commit }, privileges) {
       return new Promise(resolve => {
         const routes = [...private_routes]
         let _routes = []
@@ -63,11 +63,11 @@ export default {
         })
 
         // 是否超级管理员
-        if (permissions === 'all') {
+        if (privileges === 'all') {
           _routes = [...routes]
-        } else if (Array.isArray(permissions)) {
-          permission_names = []
-          permissions.forEach((item) => permission_names.push(item))
+        } else if (Array.isArray(privileges)) {
+          privilege_names = []
+          privileges.forEach((item) => privilege_names.push(item))
           _routes = filterRoutes(routes)
         }
 

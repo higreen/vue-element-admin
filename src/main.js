@@ -12,21 +12,11 @@ import store from './store'
 import router from './router'
 
 import './icons' // icon
-import './permission' // permission control
-import './utils/error-log' // error log
-
-import * as filters from './filters' // global filters
+import './guard' // permission control
 
 Vue.use(Element, {
   size: 'medium', // set element-ui default size
 })
-
-// register global utility filters
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
-
-Vue.config.productionTip = false
 
 new Vue({
   el: '#app',

@@ -15,7 +15,7 @@
       <el-table-column label="简介" prop="intro" />
       <el-table-column label="是否封禁" width="150">
         <template slot-scope="{row}">
-          <el-switch v-model="row.is_forbidden" active-color="#ff4949" @change="editForbidden(row.id)" />
+          <el-switch v-model="row.is_ban" active-color="#ff4949" @change="editForbidden(row.id)" />
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="created_at" width="180" />
@@ -44,11 +44,11 @@
             show-checkbox
             node-key="name"
             :accordion="true"
-            :data="list_permission"
-            :default-checked-keys="list_permission_checked"
+            :data="list_privilege"
+            :default-checked-keys="[]"
             :props="defaultProps"
           >
-            <span slot-scope="{node,data}" class="custom-tree-node">{{ data.meta.title }}</span>
+            <span slot-scope="{data}" class="custom-tree-node">{{ data.meta.title }}</span>
           </el-tree>
         </el-form-item>
       </el-form>
@@ -78,12 +78,11 @@ export default {
         name: '',
       },
       list_query_copy: {},
-      list_permission: [],
-      list_permission_checked: [],
+      list_privilege: [],
       form: {
         name: '',
         intro: '',
-        permissions: [],
+        privileges: [],
       },
       routesData: [],
       // 状态
@@ -97,7 +96,7 @@ export default {
   },
   created() {
     Object.assign(this.list_query_copy, this.list_query)
-    this.list_permission = [...this.$store.state.permission.original_routes]
+    this.list_privilege = [...this.$store.state.privilege.original_routes]
     this.getList()
   },
   methods: {
@@ -114,15 +113,30 @@ export default {
     // 添加
     add() {
       this.list_index = null
+      this.form.name = ''
+      this.form.intro = ''
+      this.form.privileges.splice(0)
       this.show_form = true
+      this.setCheckedPrivileges()
     },
     // 编辑
     edit(index) {
       const item = this.list[index]
-      Object.assign(this.form, item)
+      this.form.name = item.name
+      this.form.intro = item.intro
+      this.form.privileges.splice(0, this.form.privileges.length, ...item.privileges)
       this.list_index = index
-      this.list_permission_checked = [...item.permissions]
       this.show_form = true
+      this.setCheckedPrivileges()
+    },
+    // 设置选中的权限
+    setCheckedPrivileges() {
+      const ref = this.$refs.tree
+      if (!ref) {
+        return setTimeout(() => this.setCheckedPrivileges(), 50)
+      }
+      
+      ref.setCheckedKeys(this.form.privileges)
     },
     editForbidden(id) {
       ajax.patch(`/admin/roles/${id}/forbidden`)
@@ -136,9 +150,9 @@ export default {
       this.is_loading = true
 
       ajax.get('/admin/roles', { params: this.list_query })
-        .then((res) => {
+        .then(res => {
           res.list.forEach((item) => {
-            item.is_forbidden = Boolean(item.is_forbidden)
+            item.is_ban = Boolean(item.is_ban)
           })
 
           this.list = res.list
@@ -160,13 +174,13 @@ export default {
       }
       if (id) {
         method = 'put'
-        url = `url/${id}`
+        url = `${url}/${id}`
       }
 
       // 提取权限名称
       const checked_nodes = this.$refs.tree.getCheckedKeys()
-      const half_checked_nodes = this.$refs.tree.getHalfCheckedKeys()
-      data.permissions = [...checked_nodes, half_checked_nodes]
+      // const half_checked_nodes = this.$refs.tree.getHalfCheckedKeys()
+      data.privileges = [...checked_nodes]
 
       ajax({
         method,

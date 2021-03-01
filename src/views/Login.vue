@@ -20,12 +20,7 @@
         </span>
       </el-form-item>
       <el-button class="submit" :loading="is_loading" type="primary" @click.native.prevent="submit">登录</el-button>
-      <el-button class="other-method" type="info" @click="showDialog">扫码登录</el-button>
     </el-form>
-    <!-- 弹窗 -->
-    <el-dialog title="扫码登录" :visible.sync="show_dialog" width="550px">
-      <img class="qrcode" :src="qrcode_url">
-    </el-dialog>
   </div>
 </template>
 
@@ -44,10 +39,7 @@ export default {
         password: '123456',
       },
       password_type: 'password',
-      qrcode_id: 0,
-      qrcode_url: '',
       is_loading: false,
-      show_dialog: false,
     }
   },
   methods: {
@@ -71,31 +63,6 @@ export default {
           this.$router.push(url)
         }).finally(() => {
           this.is_loading = false
-        })
-    },
-    // 显示弹窗
-    showDialog() {
-      this.show_dialog = true
-      ajax.post('/sign-in/qrcode')
-        .then(res => {
-          this.qrcode_id = res.id
-          this.qrcode_url = res.qrcode
-          this.checkScan()
-        })
-    },
-    // 检测是否扫码
-    checkScan() {
-      if (!this.show_dialog) return
-
-      const id = this.qrcode_id
-      ajax.get(`/sign-in/qrcode/${id}`)
-        .then(res => {
-          if (res.Authorization) {
-            setAuth(res.Authorization)
-            window.location.href = '/shop/index.html'
-          } else {
-            setTimeout(() => this.checkScan(), 1500)
-          }
         })
     },
   },
@@ -152,17 +119,5 @@ export default {
     width: 100%;
     margin-top: 48px;
   }
-
-  .other-method {
-    float: right;
-    margin-top: 40px;
-  }
-}
-.qrcode {
-  display: block;
-  margin: 0 auto 40px;
-  width: 250px;
-  height: 250px;
-  background: url('../assets/img/loading.svg') no-repeat center/cover;
 }
 </style>

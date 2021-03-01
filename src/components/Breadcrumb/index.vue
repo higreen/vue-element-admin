@@ -34,7 +34,7 @@ export default {
     getBreadcrumb() {
       const matched = [...this.$route.matched]
       const last = matched[matched.length - 1]
-      const routes = this.$store.state.permission.original_routes
+      const routes = this.$store.state.privilege.original_routes
 
       if (last.meta.activeMenu) {
         for (const i of routes) {

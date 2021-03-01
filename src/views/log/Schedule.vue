@@ -14,10 +14,9 @@
     >
       <el-table-column label="ID" prop="id" width="50" />
       <el-table-column label="名称" prop="name" />
-      <el-table-column label="路由" prop="route" />
       <el-table-column label="响应" prop="response" />
       <el-table-column label="执行时间（s）" prop="runtime" />
-      <el-table-column label="创建时间" prop="created_at" width="180" />
+      <el-table-column label="创建时间" prop="created_at" width="200" />
     </el-table>
     <!-- 表格-底部 -->
     <pagination v-show="total>0" :total="total" :page.sync="list_query.page" :limit.sync="list_query.size" @pagination="getList" />

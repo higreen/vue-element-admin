@@ -15,7 +15,7 @@
           <button class="el-button el-button--success is-plain el-button--mini" @click="copy(row.src,$event)">复制</button>
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" prop="created_at" width="160" />
+      <el-table-column label="发布时间" prop="created_at" width="200" />
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="list_query.page" :limit.sync="list_query.size" @pagination="getList" />
     <!-- 弹窗表单 -->

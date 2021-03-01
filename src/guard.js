@@ -27,20 +27,20 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
       // determine whether the user has obtained his permission roles through getInfo
-      if (store.getters.permission_routes.length) {
+      if (store.getters.myRoutes.length) {
         next()
       } else {
-        // 查询用户信息
-        const { permissions } = await store.dispatch('user/getInfo')
-
-        // 生成权限路由
-        const routes = await store.dispatch('permission/generateRoutes', permissions)
-        if (!routes.length) {
+        // 查询用户权限
+        const privileges = await store.dispatch('user/getInfo')
+        if (!privileges.length) {
           Message.error('一点权限都没有 (⋟﹏⋞)')
           removeAuth()
           next('/login')
           NProgress.done()
         }
+
+        // 分配路由
+        const routes = await store.dispatch('privilege/generateRoutes', privileges)
 
         // dynamically add accessible routes
         router.addRoutes(routes)
